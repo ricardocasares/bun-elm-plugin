@@ -1,6 +1,6 @@
 {
   "name": "bun-elm-plugin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Bun bundler plugin for Elm with hot module replacement under Bun.serve()",
   "author": "Rick <ricardocasares@gmail.com>",
   "license": "MIT",
