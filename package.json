@@ -1,15 +1,58 @@
 {
   "name": "bun-elm-plugin",
-  "module": "index.ts",
+  "version": "0.1.0",
+  "description": "Bun bundler plugin for Elm with hot module replacement under Bun.serve()",
+  "author": "Rick <ricardocasares@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ricardocasares/bun-elm-plugin.git"
+  },
+  "homepage": "https://github.com/ricardocasares/bun-elm-plugin#readme",
+  "bugs": "https://github.com/ricardocasares/bun-elm-plugin/issues",
   "type": "module",
-  "private": true,
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./client.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "client.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "bun",
+    "bun-plugin",
+    "elm",
+    "hmr",
+    "hot-reload",
+    "bundler"
+  ],
+  "engines": {
+    "bun": ">=1.2.0"
+  },
   "scripts": {
-    "typecheck": "bun check"
+    "typecheck": "bun check",
+    "test": "bun test",
+    "prepublishOnly": "bun check && bun test && bun run build",
+    "example": "cd example && bun server.ts",
+    "example:build": "cd example && NODE_ENV=production bun run build.ts",
+    "build": "bun run build.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
+    "@types/bun": "latest",
+    "bun-plugin-tailwind": "^0.1.2",
+    "tailwindcss": "^4.3.3",
     "typescript": "^7"
   }
 }
