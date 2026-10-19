@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install Elm
+        run: npm install -g elm@latest-0.19.3
+      - run: bun install --frozen-lockfile
+      - run: bun check
+      - run: bun test
+      - run: bun run build
+
+  publish:
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # npm provenance
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install Elm
+        run: npm install -g elm@latest-0.19.3
+      - run: bun install --frozen-lockfile
+      - name: Check tag matches package.json version
+        run: |
+          pkg="v$(bun -p 'require("./package.json").version')"
+          [ "$pkg" = "${GITHUB_REF_NAME}" ] || { echo "tag ${GITHUB_REF_NAME} != package.json ${pkg}"; exit 1; }
+      - run: bun run build
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
