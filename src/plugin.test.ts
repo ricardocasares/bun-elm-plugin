@@ -5,7 +5,7 @@ import { elm } from "./index.ts";
 const example = resolve(import.meta.dir, "../example");
 const haveElm = Bun.which("elm") !== null;
 
-describe.skipIf(!haveElm)("elmPlugin with Bun.build", () => {
+describe.skipIf(!haveElm)("Elm plugin with Bun.build", () => {
   test("compiles an .elm entry to an ES module without HMR code", async () => {
     const result = await Bun.build({
       entrypoints: [resolve(example, "main.ts")],
