@@ -27,12 +27,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write # npm provenance
+      id-token: write # npm trusted publishing (OIDC); provenance is generated automatically
     steps:
       - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: Ensure npm supports trusted publishing (>= 11.5.1)
+        run: npm install -g npm@latest && npm --version
       - name: Install Elm
         run: npm install -g elm@latest-0.19.3
       - run: bun install --frozen-lockfile
@@ -41,6 +47,4 @@ jobs:
           pkg="v$(bun -p 'require("./package.json").version')"
           [ "$pkg" = "${GITHUB_REF_NAME}" ] || { echo "tag ${GITHUB_REF_NAME} != package.json ${pkg}"; exit 1; }
       - run: bun run build
-      - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm publish --access public
